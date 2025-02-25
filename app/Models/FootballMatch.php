@@ -18,6 +18,7 @@ class FootballMatch extends Model
         'away_team',
         'match_date',
         'stadium',
+        'stadium_image',
         'ticket_price',
         'ticket_type',
         'available_tickets',

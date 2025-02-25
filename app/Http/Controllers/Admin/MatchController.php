@@ -41,6 +41,7 @@ class MatchController extends Controller
         if ($request->hasFile('stadium_image')) {
             $imagePath = $request->file('stadium_image')->store('stadium-images', 'public');
             $validated['stadium_image'] = $imagePath;
+            
         }
 
         // Combine date and time
