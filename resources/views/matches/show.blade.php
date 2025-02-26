@@ -18,6 +18,44 @@
                             </div>
                         @endif
 
+                                                <!-- Stadium Image (Plan SVG) -->
+                    <div class="w-full h-auto mb-6 mx-auto">
+                        @include('components.stadium.stadium-svg-plan')
+                    </div>
+
+                    <link rel="stylesheet" href="{{ asset('css/svg.css') }}">
+
+                    <div id="section-info" class="mt-4 p-4 bg-gray-100 rounded-md">
+                        <!-- Les informations de la section cliquée s'afficheront ici -->
+                        <p class="text-gray-700">Cliquez sur une section du stade pour voir ses informations.</p>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const sections = document.querySelectorAll('.stadium-section'); // Sélectionne toutes les sections
+
+                            sections.forEach(section => {
+                                section.addEventListener('click', function() {
+                                    const sectionLabel = this.getAttribute('inkscape:label'); // Récupère le label de la section
+                                    const sectionInfoDiv = document.getElementById('section-info'); // Cible le div d'info
+
+                                    if (sectionLabel) {
+                                        sectionInfoDiv.innerHTML = `<p class="text-gray-700 font-semibold">Section sélectionnée: ${sectionLabel}</p>`; // Affiche le label dans le div
+                                    } else {
+                                        sectionInfoDiv.innerHTML = `<p class="text-gray-700">Section cliquée, mais pas d'informations disponibles.</p>`; // Message par défaut si pas de label
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                    @push('scripts')
+                    <script>
+                        // ... le reste de ton code JavaScript existant ...
+                    </script>
+                    @endpush
+
+                    <!-- ... le reste de ton template Blade ... -->
+
                         <!-- Match Info -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
