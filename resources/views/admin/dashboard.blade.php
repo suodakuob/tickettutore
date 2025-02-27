@@ -95,7 +95,12 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $ticket->quantity }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">£{{ number_format($ticket->total_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $ticket->status === 'confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                        @php
+                                            // Debug : affiche la valeur de $ticket->status
+                                            // dd($ticket->status);
+                                        @endphp
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ strtolower($ticket->status) === 'confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                             {{ ucfirst($ticket->status) }}
                                         </span>
                                     </td>

@@ -10,3 +10,10 @@
     stroke: #007bff;  /* Bordure au survol (bleu plus foncé) */
     stroke-width: 2;
 }
+
+.section-selected {
+    fill: #ffdd5e; /* Couleur de remplissage des sections sélectionnées (jaune) */
+    stroke: #ffaa00;  /* Bordure des sections sélectionnées (orange) */
+    stroke-width: 2;
+}
+

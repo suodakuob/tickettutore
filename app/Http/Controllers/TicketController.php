@@ -38,7 +38,7 @@ class TicketController extends Controller
                 'user_id' => auth()->id(),
                 'match_id' => $match->id,
                 'price' => $match->ticket_price,
-                'status' => 'pending',
+                'status' => 'confirmed',
                 'ticket_number' => 'TIX-' . Str::random(10),
             ]);
         }

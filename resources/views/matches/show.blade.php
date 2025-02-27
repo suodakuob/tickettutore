@@ -8,53 +8,124 @@
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">
                             {{ $match->home_team }} vs {{ $match->away_team }}
                         </h1>
-                        
+
                         <!-- Stadium Image -->
                         @if($match->stadium_image)
                             <div class="w-full h-64 overflow-hidden rounded-lg mb-6">
-                                <img src="{{ asset('storage/' . $match->stadium_image) }}" 
-                                     alt="{{ $match->stadium }}" 
+                                <img src="{{ asset('storage/' . $match->stadium_image) }}"
+                                     alt="{{ $match->stadium }}"
                                      class="w-full h-full object-cover">
                             </div>
                         @endif
 
-                                                <!-- Stadium Image (Plan SVG) -->
-                    <div class="w-full h-auto mb-6 mx-auto">
-                        @include('components.stadium.stadium-svg-plan')
-                    </div>
+                        <!-- Stadium Image (Plan SVG) -->
+                        <div class="w-full h-auto mb-6 mx-auto">
+                            @include('components.stadium.stadium-svg-plan')
+                        </div>
 
-                    <link rel="stylesheet" href="{{ asset('css/svg.css') }}">
+                        <link rel="stylesheet" href="{{ asset('css/svg.css') }}">
 
-                    <div id="section-info" class="mt-4 p-4 bg-gray-100 rounded-md">
-                        <!-- Les informations de la section cliquée s'afficheront ici -->
-                        <p class="text-gray-700">Cliquez sur une section du stade pour voir ses informations.</p>
-                    </div>
+                        <div id="section-info" class="mt-4 p-4 bg-gray-100 rounded-md">
+                            <h3 id="section-info-title" class="text-lg font-semibold text-gray-900 mb-2">Section Information</h3>
+                            <p id="section-name" class="text-gray-700 mb-1"></p>
+                            <p id="section-availability" class="text-gray-700 mb-1"></p>
+                            <p id="section-price" class="text-gray-700"></p>
+                            <!-- On pourra ajouter une description ici plus tard -->
+                        </div>
 
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const sections = document.querySelectorAll('.stadium-section'); // Sélectionne toutes les sections
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const sectionData = {  // Objet JavaScript pour les données des sections
+                                    'section-l3': {
+                                        name: 'Tribune Latérale 3',
+                                        availableTickets: 50,
+                                        price: 75.00
+                                    },
+                                    'section-l2': {
+                                        name: 'Tribune Latérale 2',
+                                        availableTickets: 25,
+                                        price: 120.00
+                                    },
+                                    'section-l1': {
+                                        name: 'Tribune Latérale 1',
+                                        availableTickets: 10,
+                                        price: 200.00
+                                    },
+                                    'section-k': {
+                                        name: 'Virage K',
+                                        availableTickets: 150,
+                                        price: 50.00
+                                    },
+                                    'section-r': {
+                                        name: 'Virage R',
+                                        availableTickets: 120,
+                                        price: 55.00
+                                    },
+                                    'section-j': {
+                                        name: 'Tribune Principale Basse J',
+                                        availableTickets: 5,
+                                        price: 300.00
+                                    },
+                                    'section-g': {
+                                        name: 'Tribune Principale Haute G',
+                                        availableTickets: 30,
+                                        price: 250.00
+                                    },
+                                    'section-h': {
+                                        name: 'Tribune Principale Milieu H',
+                                        availableTickets: 15,
+                                        price: 350.00
+                                    },
+                                    // ... tu peux ajouter des données pour d'autres sections ici ...
+                                };
 
-                            sections.forEach(section => {
-                                section.addEventListener('click', function() {
-                                    const sectionLabel = this.getAttribute('inkscape:label'); // Récupère le label de la section
-                                    const sectionInfoDiv = document.getElementById('section-info'); // Cible le div d'info
+                                const sections = document.querySelectorAll('.stadium-section'); // Sélectionne toutes les sections
+                                const sectionInfoDiv = document.getElementById('section-info');
+                                const quantityInput = document.getElementById('quantity'); // Cibler le champ de quantité
+                                const selectedSections = []; // Tableau pour stocker les sections sélectionnées (NOUVEAU)
 
-                                    if (sectionLabel) {
-                                        sectionInfoDiv.innerHTML = `<p class="text-gray-700 font-semibold">Section sélectionnée: ${sectionLabel}</p>`; // Affiche le label dans le div
-                                    } else {
-                                        sectionInfoDiv.innerHTML = `<p class="text-gray-700">Section cliquée, mais pas d'informations disponibles.</p>`; // Message par défaut si pas de label
-                                    }
+                                sections.forEach(section => {
+                                    section.addEventListener('click', function() {
+                                        const sectionLabel = this.getAttribute('inkscape:label'); // Récupère le label de la section
+                                        const sectionClass = this.classList[1]; // Récupère la classe spécifique (section-l3, section-l2, ...)
+                                        const data = sectionData[sectionClass]; // Récupère les données correspondantes dans sectionData
+
+                                        // NOUVEAU - Gestion de la sélection multiple:
+                                        const sectionIndex = selectedSections.indexOf(sectionClass); // Vérifier si la section est déjà sélectionnée
+
+                                        if (sectionIndex === -1) { // Si la section n'est PAS déjà sélectionnée
+                                            selectedSections.push(sectionClass); // Ajouter la section au tableau des sections sélectionnées
+                                            this.classList.add('section-selected'); // Ajouter une classe CSS pour l'effet visuel de sélection
+                                        } else { // Si la section est DÉJÀ sélectionnée
+                                            selectedSections.splice(sectionIndex, 1); // Retirer la section du tableau
+                                            this.classList.remove('section-selected'); // Retirer la classe CSS de sélection
+                                        }
+
+                                        // Mettre à jour le champ "Number of Tickets" avec le nombre de sections sélectionnées (NOUVEAU)
+                                        quantityInput.value = selectedSections.length;
+
+
+                                        if (data) {
+                                            sectionInfoDiv.innerHTML = `
+                                                <h3 id="section-info-title" class="text-lg font-semibold text-gray-900 mb-2">${data.name}</h3>
+                                                <p id="section-name" class="text-gray-700 mb-1">Section: <span class="font-medium">${sectionLabel}</span></p>
+                                                <p id="section-availability" class="text-gray-700 mb-1">Billets disponibles: <span class="font-medium">${data.availableTickets}</span></p>
+                                                <p id="section-price" class="text-gray-700">Prix par billet: <span class="font-medium">$${data.price.toFixed(2)}</span></p>
+                                            `;
+                                        } else {
+                                            sectionInfoDiv.innerHTML = `<p class="text-gray-700">Section cliquée, mais pas d'informations disponibles.</p>`;
+                                        }
+                                    });
                                 });
                             });
-                        });
-                    </script>
-                    @push('scripts')
-                    <script>
-                        // ... le reste de ton code JavaScript existant ...
-                    </script>
-                    @endpush
+                        </script>
+                        @push('scripts')
+                        <script>
+                            // ... le reste de ton code JavaScript existant ...
+                        </script>
+                        @endpush
 
-                    <!-- ... le reste de ton template Blade ... -->
+                        <!-- ... le reste de ton template Blade ... -->
 
                         <!-- Match Info -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -91,7 +162,7 @@
                                     <form action="{{ route('tickets.store') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="match_id" value="{{ $match->id }}">
-                                        
+
                                         <div class="mb-4">
     <label for="quantity" class="block text-gray-700 text-sm font-bold mb-2">
         Number of Tickets
@@ -140,7 +211,7 @@
                                             </p>
                                         </div>
 
-                                        <button type="submit" 
+                                        <button type="submit"
                                                 class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded hover:bg-green-700 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
                                             Book Now
                                         </button>
